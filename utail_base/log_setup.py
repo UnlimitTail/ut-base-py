@@ -35,9 +35,7 @@ import logging
 import coloredlogs
 
 def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_key='LOG_CFG'):
-    """
-    | Logging Setup
-    """
+
     path = default_path
     value = os.getenv(env_key, None)
     if value:
@@ -54,8 +52,35 @@ def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_k
                 logging.basicConfig(level=default_level)
                 coloredlogs.install(level=default_level)
         print('loaded yaml. path:{}'.format(path))
-        print( config )
     else:
         logging.basicConfig(level=default_level)
         coloredlogs.install(level=default_level)
         print('Failed to load configuration file. Using default configs')
+
+
+def setup_logging_root(loggingLv=logging.DEBUG, filePath=None,handlers=None, fmtParam=None, datefmtParam=None):
+    if fmtParam is None:
+        fmtParam = '%(levelname)s:%(name)s: %(message)s '
+        '(%(asctime)s; %(filename)s:%(lineno)d)'
+
+    if datefmtParam is None:
+        datefmtParam = "%Y-%m-%d %H:%M:%S"
+
+    f = logging.Formatter(fmt=fmtParam, datefmt=datefmtParam)
+
+    if handlers is None:
+        handlers = [logging.StreamHandler()]
+
+        if filePath is not None:
+            handlers.append(
+                logging.handlers.RotatingFileHandler(filePath, 
+                encoding='utf8',
+                maxBytes=100000, backupCount=1)
+            )
+
+    log = logging.getLogger()
+    log.setLevel(loggingLv)
+    for h in handlers:
+        h.setFormatter(f)
+        h.setLevel(loggingLv)
+        log.addHandler(h)

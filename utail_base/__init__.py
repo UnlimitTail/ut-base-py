@@ -1,2 +1,2 @@
-from .log_setup import setup_logging
+from .log_setup import *
 from .web_support import *
