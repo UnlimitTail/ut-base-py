@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import logging
 import requests
 import shutil
 import urllib.request
@@ -25,13 +26,19 @@ def http_send(url, body='', content_type='json'):
     if content_type == 'json':
         req.add_header('Content-Type', 'application/json; charset=utf-8')
 
-    if len(body) > 0:
-        jsonbody = json.dumps(body)
-        jsonbodyAsBytes = jsonbody.encode('utf-8')
-        req.add_header('Content-Length', len(jsonbodyAsBytes))
-        return urllib.request.urlopen(req, jsonbodyAsBytes)
-    else:
-        return urllib.request.urlopen(req)
+    try:
+        if len(body) > 0:
+            jsonbody = json.dumps(body)
+            jsonbodyAsBytes = jsonbody.encode('utf-8')
+            req.add_header('Content-Length', len(jsonbodyAsBytes))
+            return urllib.request.urlopen(req, jsonbodyAsBytes)
+        else:
+            return urllib.request.urlopen(req)
+    except urllib.error.HTTPError as err:
+        logging.getLogger(__name__).error(err.code)
+        return None
+
+
 
     
     
