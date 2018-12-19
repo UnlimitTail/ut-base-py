@@ -13,3 +13,14 @@ def replaceDayOfWeek(srcIncludingHangul, srcNation='ko'):
     convertedStr = convertedStr.replace( '토', 'Saturday')
     convertedStr = convertedStr.replace( '일', 'Sunday')
     return convertedStr
+
+def eraseHangulInDate(srcString):
+    convertedStr = copy.copy(srcString)
+
+    convertedStr = convertedStr.replace( '년', '')
+    convertedStr = convertedStr.replace( '월', '')
+    convertedStr = convertedStr.replace( '일', '')
+    return convertedStr
+
+
+
