@@ -33,7 +33,7 @@ class UtFileHashFilter:
      으로 지정하려 한다면 다음과 같이 필터를 생성합니다.
      필터링되지 않은 파일들은 모두 기본(default) 그룹에 속하게 됩니다.
 
-     from utail_filehash import UtFileHashFilter as utFilter, UtFileHash as utHash
+     from utail_base import UtFileHashFilter as utFilter, UtFileHash as utHash
      
      filter = utfile_hash.UtFileHashFilter()
      filter.appendGroup('a', 'apple')
