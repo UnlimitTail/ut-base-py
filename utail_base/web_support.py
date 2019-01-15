@@ -20,8 +20,8 @@ auth_verify=False, auth_id='usrname', auth_pw='password'
 """
  http send
 """
-def http_send(url, body='', content_type='json'):
-    req = urllib.request.Request(url)
+def http_send(url, body='', content_type='json', method='POST'):
+    req = urllib.request.Request(url, method=method)
 
     if content_type == 'json':
         req.add_header('Content-Type', 'application/json; charset=utf-8')
