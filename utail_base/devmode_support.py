@@ -23,7 +23,7 @@ def runProcess(log, file, process_task, postBehavior, params):
     def tpHandlerReport(tp):
         from utail_base import http_send
         for ent in tp._contents:
-            ent['text'] = html.unescape(ent['text'])
+            #ent['text'] = html.unescape(ent['text'])
             http_send(params['reportURL'], ent, 'json', 'PUT')
 
     if postBehavior == "report":

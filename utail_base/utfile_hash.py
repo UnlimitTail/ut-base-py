@@ -72,9 +72,19 @@ class UtFileHash:
                 # hidden file.
                 continue
 
-            foundGrName = ''    
+            excludingFile = False
+            for excludeWord in groupFilter._exclude:
+                if excludeWord in fn:
+                    excludingFile = True
+                    break
+
+            if excludingFile is True:
+                continue
+
+            foundGrName = ''
             for registedGrName, registedFilterString in groupFilter._dic.items():
-                if registedFilterString in path:
+                # fileName = path[1 + path.rfind('/'):]
+                if registedFilterString in fn:
                     foundGrName = registedGrName
                     break
 

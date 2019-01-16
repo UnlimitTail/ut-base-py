@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import functools
+import inspect
 from timeit import default_timer as timer
 
 def exception(logger):
@@ -17,7 +18,7 @@ def exception(logger):
     return decorator
 
 
-def exceptionDB(logger):
+def exceptionDB(logger, loggers_idx = 0):
     def decorator(func):
         def wrapper(*args, **kwargs):
             try:
@@ -29,8 +30,8 @@ def exceptionDB(logger):
                 logger.error(err)
                 return None
             finally:
-                if args[0] is not None:
-                    args[0].close()
+                if args[loggers_idx] is not None:
+                    args[loggers_idx].close()
         return wrapper
     return decorator
 
