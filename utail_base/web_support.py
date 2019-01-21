@@ -12,10 +12,16 @@ import urllib.request
 def download_file(url, downloadPath, fileOpenMode = 'wb',
 auth_verify=False, auth_id='usrname', auth_pw='password'
 ):
-    r = requests.get(url, auth=(auth_id, auth_pw), verify=auth_verify,stream=True)
-    r.raw.decode_content = True        
-    with open(downloadPath, fileOpenMode) as f:
-        shutil.copyfileobj(r.raw, f)
+    try:
+        r = requests.get(url, auth=(auth_id, auth_pw), verify=auth_verify,stream=True)
+        r.raw.decode_content = True        
+        with open(downloadPath, fileOpenMode) as f:
+            shutil.copyfileobj(r.raw, f)
+    except Exception as inst:
+        logging.error(inst.args)
+        return False
+
+    return True
 
 """
  http send
@@ -36,6 +42,12 @@ def http_send(url, body='', content_type='json', method='POST'):
             return urllib.request.urlopen(req)
     except urllib.error.HTTPError as err:
         logging.getLogger(__name__).error(err.code)
+        return None
+    except urllib.error.URLError as err:
+        logging.getLogger(__name__).error(err.reason)
+        return None
+    except Exception as inst:
+        logging.error(inst.args)
         return None
 
 
