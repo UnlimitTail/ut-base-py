@@ -18,13 +18,17 @@ def processBootStrap(useChdir=True, useLogger=True, logFilePath='/tmp/logFileNam
 
 
 def runProcess(log, file, process_task, postBehavior, params):
-    def tpHandlerPrint(tp):
+    def tpHandlerPrintOnce(tp):
         import json
         for ent in tp._contents:
             ent['text'] = clean_html(ent['text'])
             log.debug(json.dumps(ent))
-        
-        
+            
+    def tpHandlerPrint(tp):
+        import json
+        for ent in tp._contents:
+            ent['text'] = clean_html(ent['text'])
+        log.debug(json.dumps(tp._contents))
 
     def tpHandlerReport(tp):
         from utail_base import http_send
@@ -35,6 +39,8 @@ def runProcess(log, file, process_task, postBehavior, params):
 
     if postBehavior == "report":
         postHandler = tpHandlerReport
+    elif postBehavior == "printOnce":
+        postHandler = tpHandlerPrintOnce
     else:
         postHandler = tpHandlerPrint
 
