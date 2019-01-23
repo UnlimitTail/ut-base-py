@@ -2,6 +2,8 @@ import os
 import utail_base
 import logging
 import html
+import re
+from .string_support import clean_html
 
 def processBootStrap(useChdir=True, useLogger=True, logFilePath='/tmp/logFileName.log', filePath=''):
     if useChdir is True:
@@ -18,12 +20,17 @@ def processBootStrap(useChdir=True, useLogger=True, logFilePath='/tmp/logFileNam
 def runProcess(log, file, process_task, postBehavior, params):
     def tpHandlerPrint(tp):
         import json
-        log.debug(json.dumps(tp._contents))
+        for ent in tp._contents:
+            ent['text'] = clean_html(ent['text'])
+            log.debug(json.dumps(ent))
+        
+        
 
     def tpHandlerReport(tp):
         from utail_base import http_send
         for ent in tp._contents:
-            #ent['text'] = html.unescape(ent['text'])
+            #ent['text'] = html.unescape(ent['text'])\
+            ent['text'] = clean_html(ent['text'])
             http_send(params['reportURL'], ent, 'json', 'PUT')
 
     if postBehavior == "report":
