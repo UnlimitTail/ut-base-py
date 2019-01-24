@@ -52,5 +52,18 @@ def http_send(url, body='', content_type='json', method='POST'):
 
 
 
+class HttpError(Exception):
+    def __init__(self, message, filename, line, function, code):
+        super().__init__(message)
+
+        # Now for your custom code...
+        self.message = message
+        self.filename = filename
+        self.line = line
+        self.function = function
+        self.code = code
+
+
+
     
     
