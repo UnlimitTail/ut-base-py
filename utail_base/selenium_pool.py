@@ -20,6 +20,7 @@ class SeleniumPoolSingleton(type):
 
 class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
     def __init__(self, webDriverPath, poolCnt=0):
+        log.debug('Create SeleniumPool ... ')
 
         self._lock = threading.Lock()
 
@@ -53,9 +54,11 @@ class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
         log.debug('chrome driver loading... ')
 
         with self._lock:
+            log.debug('enter lock : ' + str(threading.get_ident()))
             driver = webdriver.Chrome(self._webDriverPath, chrome_options=self._options)
             self._map[str(threadID)] = driver
             driver.implicitly_wait(5)
+            log.debug('leave lock : ' + str(threading.get_ident()))
 
     def getDriver(self, threadID):
         with self._lock:
