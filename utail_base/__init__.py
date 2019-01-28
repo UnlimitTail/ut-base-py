@@ -6,5 +6,6 @@ from .string_support import *
 from .utfile_hash import UtFileHashFilter, UtFileHash
 from .web_support import *
 from .time_support import *
+from .selenium_pool import *
 
 
