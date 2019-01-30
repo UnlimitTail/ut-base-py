@@ -37,9 +37,9 @@ def http_send(url, body='', content_type='json', method='POST'):
             jsonbody = json.dumps(body)
             jsonbodyAsBytes = jsonbody.encode('utf-8')
             req.add_header('Content-Length', len(jsonbodyAsBytes))
-            return urllib.request.urlopen(req, jsonbodyAsBytes)
+            return urllib.request.urlopen(req, jsonbodyAsBytes, timeout=30)
         else:
-            return urllib.request.urlopen(req)
+            return urllib.request.urlopen(req, timeout=30)
     except urllib.error.HTTPError as err:
         logging.getLogger(__name__).error(err.code)
         return None
