@@ -38,15 +38,21 @@ def exceptionDB(logger, loggers_idx = 0):
 
 def task_timeChecker(logger):
     def decorator(func):
-        def wrapper(*args, **kwargs):
-            startTime = timer()
-            try:
-                func(*args, **kwargs)
+        def task_timeCheckerWrapper(*args, **kwargs):
+            # startTime = timer()
+            # try:
+            #     func(*args, **kwargs)
 
-                endTime = timer()
-                return (True, endTime - startTime)
-            except Exception as inst:
-                logger.error(inst.args)
-                return (False, 0)
-        return wrapper
+            #     endTime = timer()
+            #     return (True, endTime - startTime)
+            # except Exception as inst:
+            #     logger.error(inst.args)
+            #     return (False, 0)
+
+            startTime = timer()
+            func(*args, **kwargs)
+            endTime = timer()
+            return (True, endTime - startTime)
+            
+        return task_timeCheckerWrapper
     return decorator

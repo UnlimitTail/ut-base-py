@@ -18,7 +18,7 @@ auth_verify=False, auth_id='usrname', auth_pw='password'
         with open(downloadPath, fileOpenMode) as f:
             shutil.copyfileobj(r.raw, f)
     except Exception as inst:
-        logging.error(inst.args)
+        logging.error('failed downloadfile. url:{}, downloadPath:{}, msg:{}'.format(url, downloadPath, inst.args))
         return False
 
     return True
@@ -41,13 +41,13 @@ def http_send(url, body='', content_type='json', method='POST'):
         else:
             return urllib.request.urlopen(req, timeout=30)
     except urllib.error.HTTPError as err:
-        logging.getLogger(__name__).error(err.code)
+        logging.getLogger(__name__).error('faild httpSend. url:{}, errCode:{}'.format(url, err.code))
         return None
     except urllib.error.URLError as err:
-        logging.getLogger(__name__).error(err.reason)
+        logging.getLogger(__name__).error('faild httpSend. url:{}, reason:{}'.format(url, err.reason))
         return None
     except Exception as inst:
-        logging.error(inst.args)
+        logging.getLogger(__name__).error('faild httpSend. url:{}, msg:{}'.format(url, inst.args))
         return None
 
 
