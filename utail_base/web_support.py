@@ -63,6 +63,11 @@ class HttpError(Exception):
         self.function = function
         self.code = code
 
+    def getErrorString(self):
+        return 'http error. code:{}. file:{} line:{} function:{} msg:{}'.format(self.code, 
+         self.filename, self.line, self.function, self.message,
+        )
+
 
 
     

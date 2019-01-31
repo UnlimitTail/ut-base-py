@@ -4,6 +4,7 @@ import logging
 import html
 import re
 from .string_support import clean_html
+import threading
 
 def processBootStrap(useChdir=True, useLogger=True, logFilePath='/tmp/logFileName.log', filePath=''):
     if useChdir is True:
@@ -45,7 +46,8 @@ def runProcess(log, file, process_task, postBehavior, params):
         postHandler = tpHandlerPrint
 
     resultPair = process_task(params,
-    postTPHandler=postHandler
+    postTPHandler=postHandler,
+    TLS=threading.local(),
     )
 
     if resultPair[0] is True:
