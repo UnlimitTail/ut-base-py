@@ -5,6 +5,8 @@ import html
 import re
 from .string_support import clean_html
 import threading
+from timeit import default_timer as timer
+from .web_support import HttpError
 
 def processBootStrap(useChdir=True, useLogger=True, logFilePath='/tmp/logFileName.log', filePath=''):
     if useChdir is True:
@@ -45,12 +47,35 @@ def runProcess(log, file, process_task, postBehavior, params):
     else:
         postHandler = tpHandlerPrint
 
-    resultPair = process_task(params,
-    postTPHandler=postHandler,
-    TLS=threading.local(),
-    )
+    
+    startTime = timer()
+    log.debug('start module : ' + __file__)
 
-    if resultPair[0] is True:
-        log.debug('task successed!~ scriptName:{} / elapsed sec : {}'.format(os.path.basename(file), resultPair[1]))
-    else:
-        log.debug('task failed.')    
+    try:
+        process_task(params, 
+        postTPHandler=postHandler, 
+        TLS=threading.local(), 
+        )
+
+        log.debug('clean-end module({}) elapsed Time : {}'.format(__file__, timer() - startTime ))
+        return True
+
+    except HttpError as inst:
+        errorMsg = 'code:{} / msg:{} / <{}>:({}) / {}'.format(inst.code, inst.message, inst.filename, inst.line, inst.function)
+
+        log.error(errorMsg)
+
+        # http error(429) : Too Many Requests
+        if "429" == str(inst.code):
+            log.error('Too Many Requests. targetFile : {}'.format(__file__))
+        else:
+            log.error('Http Error. targetFile : {} summary:{}'.format(__file__, inst.getErrorString()))
+            
+    except Exception as inst:
+        errorMsg = 'failed process_task(not defined exception). target:{}, msg:{}'.format(__file__, inst.args)
+
+        log.error(errorMsg)
+    
+    log.debug('failed-end module({}) elapsed Time : {}'.format(__file__, timer() - startTime ))
+    return False
+

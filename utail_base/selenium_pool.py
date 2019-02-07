@@ -2,6 +2,7 @@
 import logging
 import queue
 from selenium import webdriver
+import subprocess
 import threading
 
 log = logging.getLogger(__name__)
@@ -72,17 +73,19 @@ class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
         for handle in driver.window_handles:
             driver.switch_to.window(handle)
             driver.close()
-    
-        
-            
-    # def alloc(self):
-    #     with self._lock:
-    #         print('q size : {}'.format(self._q.qsize()))
-    #         return self._q.get()
 
-    # def free(self, driver):
-    #     with self._lock:
-    #         self._q.put(driver)
+    @staticmethod
+    def clearResourceCmd():
+        result = subprocess.Popen("killall -9 'Google Chrome Helper'",
+         shell=True,
+         stdout=subprocess.PIPE,
+         universal_newlines=True).communicate()[0]
+
+        result = subprocess.Popen('killall -9 chromedriver',
+         shell=True,
+         stdout=subprocess.PIPE,
+         universal_newlines=True).communicate()[0]
+        
 
     
 

@@ -10,6 +10,7 @@ class UtFileHashFilter:
     필터링 되지않은 파일들은 default 그룹에 속합니다
     """
     def __init__(self):
+        # _dic    key : group name / value : filter string's list
         self._dic = dict()
         self._exclude = []
         self._defaultGrName = 'default'
@@ -17,10 +18,15 @@ class UtFileHashFilter:
     """
     기본 기룹 이외에 별도의 그룹을 생성합니다.
     """
-    def appendGroup(self, grName, filterString):
+    def appendGroup(self, grName, *filterString):
         if grName == self._defaultGrName:
             raise Exception('reserved grName')
-        self._dic[grName] = filterString
+
+        self._dic[grName] = list()
+        
+        for i in range(len(filterString)):
+            self._dic[grName].append(filterString[i])
+
 
     def appendExclude(self, stringValue):
         self._exclude.append(stringValue)
@@ -82,11 +88,15 @@ class UtFileHash:
                 continue
 
             foundGrName = ''
-            for registedGrName, registedFilterString in groupFilter._dic.items():
-                # fileName = path[1 + path.rfind('/'):]
-                if registedFilterString in fn:
-                    foundGrName = registedGrName
-                    break
+
+            for registedGrName, registedFilterStringList in groupFilter._dic.items():
+                for fs in registedFilterStringList:
+                    if fs in fn:
+                        foundGrName = registedGrName
+                        break
+                else:
+                    continue # only executed if the inner loop did NOT break
+                break # only executed if the inner loop DID break
 
             #print('grName: {}, filePath:{}'.format(foundGrName, path) )
             if '' == foundGrName:
