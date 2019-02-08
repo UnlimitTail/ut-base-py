@@ -7,6 +7,7 @@ from .string_support import clean_html
 import threading
 from timeit import default_timer as timer
 from .web_support import HttpError
+from .selenium_pool import SeleniumPool
 
 def processBootStrap(useChdir=True, useLogger=True, logFilePath='/tmp/logFileName.log', filePath=''):
     if useChdir is True:
@@ -20,17 +21,38 @@ def processBootStrap(useChdir=True, useLogger=True, logFilePath='/tmp/logFileNam
         utail_base.setup_logging_root(loggingLv=logging.DEBUG, filePath=logFilePath)
 
 
-def runProcess(log, file, process_task, postBehavior, params):
+def dataValidatorDefault(ent):
+    # {
+    #     'key':tp.getCurrentURL(),
+    #     'category1':'ex_noti',
+    #     'category2':'coinone',
+    #     'url':tp.getCurrentURL(),
+    #     'title':noticeTitle, 
+    #     'created':int(mktime(noticeTime.timetuple())),
+    #     'locale':'ko',
+    #     'text': detailTagSoup.get_text(separator='\n'),
+    #     'tags':['coinone', '코인원']
+    # }
+    pass
+
+
+
+
+def runProcess(log, file, process_task, postBehavior, params, convFunc = None, validator = dataValidatorDefault):
     def tpHandlerPrintOnce(tp):
         import json
         for ent in tp._contents:
             ent['text'] = clean_html(ent['text'])
+            convFunc(ent)
+            validator(ent)
             log.debug(json.dumps(ent))
             
     def tpHandlerPrint(tp):
         import json
         for ent in tp._contents:
             ent['text'] = clean_html(ent['text'])
+            convFunc(ent)
+            validator(ent)
         log.debug(json.dumps(tp._contents))
 
     def tpHandlerReport(tp):
@@ -38,6 +60,8 @@ def runProcess(log, file, process_task, postBehavior, params):
         for ent in tp._contents:
             #ent['text'] = html.unescape(ent['text'])\
             ent['text'] = clean_html(ent['text'])
+            convFunc(ent)
+            validator(ent)
             http_send(params['reportURL'], ent, 'json', 'PUT')
 
     if postBehavior == "report":
@@ -79,3 +103,8 @@ def runProcess(log, file, process_task, postBehavior, params):
     log.debug('failed-end module({}) elapsed Time : {}'.format(__file__, timer() - startTime ))
     return False
 
+
+def runTest(log, process_task, postBehavior, pjs, convFunc = None, validator = dataValidatorDefault):
+    spool = SeleniumPool(str(pjs['webdriverPath']))
+    spool.createPool(str(threading.get_ident()))
+    runProcess(log, "scriptTest", process_task, postBehavior, pjs, convFunc, validator)
