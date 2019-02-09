@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from selenium import webdriver
+from selenium.webdriver.remote.webdriver import WebDriver as WD, WebElement as WE
 from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 
 class SeleniumUtils:
 
     @staticmethod
-    def _elmt(func, name, retryCnt, retryWaitSec):
+    def _elmt(root, func, name, retryCnt, retryWaitSec):
         currentLoopCnt = 0
 
         while True:
             currentLoopCnt = currentLoopCnt + 1
             try:
-                return func(name)
+                return func(root, name)
             except NoSuchElementException:
                 
                 sleep(retryWaitSec)
@@ -25,12 +25,12 @@ class SeleniumUtils:
 
 
     @staticmethod
-    def _elmts(func, name, retryCnt, retryWaitSec):
+    def _elmts(root, func, name, retryCnt, retryWaitSec):
         currentLoopCnt = 0
 
         while True:
             currentLoopCnt = currentLoopCnt + 1
-            ret = func(name)
+            ret = func(root, name)
             if ret:
                 return ret
 
@@ -44,21 +44,33 @@ class SeleniumUtils:
 
 
     @staticmethod
+    def _getFunc(node, funcName):
+        if type(node) is WE:
+            return WE.__dict__[funcName]
+        else:
+            return WD.__dict__[funcName]
+            
+            
+    @staticmethod
     def elmt_class(root, className, retryCnt=3, retryWaitSec=3):
-        return SeleniumUtils._elmt(root.find_element_by_class_name, className, retryCnt, retryWaitSec)
+        cb = SeleniumUtils._getFunc(root, 'find_element_by_class_name')
+        return SeleniumUtils._elmt(root, cb, className, retryCnt, retryWaitSec)
+
+
+    @staticmethod
+    def elmts_class(root, className, retryCnt=3, retryWaitSec=3):
+        cb = SeleniumUtils._getFunc(root, 'find_element_by_class_name')
+        return SeleniumUtils._elmts(root, cb, className, retryCnt, retryWaitSec)
 
 
     @staticmethod
     def elmt_tag(root, tagName, retryCnt=3, retryWaitSec=3):
-        return SeleniumUtils._elmt(root.find_element_by_tag_name, tagName, retryCnt, retryWaitSec)
-
-    
-    @staticmethod
-    def elmts_class(root, className, retryCnt=3, retryWaitSec=3):
-        return SeleniumUtils._elmts(root.find_element_by_class_name, className, retryCnt, retryWaitSec)
+        cb = SeleniumUtils._getFunc(root, 'find_element_by_tag_name')
+        return SeleniumUtils._elmt(root, cb, tagName, retryCnt, retryWaitSec)
 
 
     @staticmethod
     def elmts_tag(root, tagName, retryCnt=3, retryWaitSec=3):
-        return SeleniumUtils._elmts(root.find_element_by_tag_name, tagName, retryCnt, retryWaitSec)
+        cb = SeleniumUtils._getFunc(root, 'find_element_by_tag_name')
+        return SeleniumUtils._elmts(root, cb, tagName, retryCnt, retryWaitSec)
 
