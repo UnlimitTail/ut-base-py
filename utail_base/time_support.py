@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from dateutil import tz
-import pytz
+import maya
 from time import mktime
-
-def localTimeToUTCTime(localDateTime, localTimeZone = pytz.timezone('Asia/Seoul')):
-    # localDT = localDateTime.replace(tzinfo=tz.tzlocal())
-    localDT = localDateTime.replace(tzinfo=localTimeZone)
-    return localDT.astimezone(tz.tzutc())
 
 def timeOffset(localDateTime, offsetMinutes = -540, offsetSecs = 0):
     lts = int(mktime(localDateTime.timetuple())) + int(offsetMinutes * 60) + int(offsetSecs)
     return datetime.fromtimestamp(lts)
+
+
+def toDt(dateStr:str) -> datetime:
+    # try:
+        return maya.parse(dateStr).datetime()
+    # except Exception:
+    #     print('error! test')
+    #     quit(1)
 
