@@ -74,3 +74,15 @@ class SeleniumUtils:
         cb = SeleniumUtils._getFunc(root, 'find_element_by_tag_name')
         return SeleniumUtils._elmts(root, cb, tagName, retryCnt, retryWaitSec)
 
+    
+    @staticmethod
+    def elmt_name(root, name, retryCnt=3, retryWaitSec=3):
+        cb = SeleniumUtils._getFunc(root, 'find_element_by_name')
+        return SeleniumUtils._elmt(root, cb, name, retryCnt, retryWaitSec)
+
+
+    @staticmethod
+    def elmts_name(root, name, retryCnt=3, retryWaitSec=3):
+        cb = SeleniumUtils._getFunc(root, 'find_element_by_name')
+        return SeleniumUtils._elmts(root, cb, name, retryCnt, retryWaitSec)
+

@@ -70,5 +70,15 @@ class HttpError(Exception):
 
 
 
+def addHeaderFiledsForScrap(header:dict):
+    #header['User-Agent'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1'
+    header['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+    header['Accept'] = 'text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8'
+    header['Accept-Charset'] = 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'
+    header['Accept-Encoding'] = 'none'
+    header['Accept-Language'] = 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7'
+    header['Connection'] = 'keep-alive'
+    header['cache-control'] = 'no-cache'
+    header['Content-Type'] = "application/x-www-form-urlencoded"
     
-    
+    return header
