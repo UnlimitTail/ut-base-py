@@ -67,7 +67,13 @@ def timeSync(log, platform):
     
     c = ntplib.NTPClient()
     # r = c.request('kr.pool.ntp.org', version=3)
-    r = c.request('europe.pool.ntp.org', version=3)
+    try:
+        r = c.request('europe.pool.ntp.org', version=3)
+    except ntplib.NTPException as inst:
+        log.error('failed timeSync(timed-out). msg:{}'.format(inst.args))
+        return
+
+
     dt = datetime.fromtimestamp(r.tx_time)
 
     log.info('current time(prev sync): {}'.format(datetime.now() ) )
