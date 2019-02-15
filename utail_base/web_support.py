@@ -97,7 +97,8 @@ def strip_tags(html, invalid_tags = ['span',]):
                     c = strip_tags(str(c), invalid_tags)
                 s += str(c)
 
-            tag.replaceWith(s)
+            sNode = BeautifulSoup(s, 'html.parser')
+            tag.replaceWith(sNode)
 
     return soup
 
@@ -107,6 +108,6 @@ def getTextForReport(soup):
     [s.extract() for s in soup('script')]
     # eliminate script tag
     [s.extract() for s in soup('img')]
-    
+
     soup = strip_tags(str(soup), ['span',])
     return soup.get_text(separator='\n').replace(u'\xa0',u'') 
