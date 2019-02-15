@@ -59,7 +59,7 @@ class SeleniumUtils:
 
     @staticmethod
     def elmts_class(root, className, retryCnt=3, retryWaitSec=3):
-        cb = SeleniumUtils._getFunc(root, 'find_element_by_class_name')
+        cb = SeleniumUtils._getFunc(root, 'find_elements_by_class_name')
         return SeleniumUtils._elmts(root, cb, className, retryCnt, retryWaitSec)
 
 
@@ -71,7 +71,7 @@ class SeleniumUtils:
 
     @staticmethod
     def elmts_tag(root, tagName, retryCnt=3, retryWaitSec=3):
-        cb = SeleniumUtils._getFunc(root, 'find_element_by_tag_name')
+        cb = SeleniumUtils._getFunc(root, 'find_elements_by_tag_name')
         return SeleniumUtils._elmts(root, cb, tagName, retryCnt, retryWaitSec)
 
     
@@ -83,6 +83,17 @@ class SeleniumUtils:
 
     @staticmethod
     def elmts_name(root, name, retryCnt=3, retryWaitSec=3):
-        cb = SeleniumUtils._getFunc(root, 'find_element_by_name')
+        cb = SeleniumUtils._getFunc(root, 'find_elements_by_name')
         return SeleniumUtils._elmts(root, cb, name, retryCnt, retryWaitSec)
 
+
+    @staticmethod
+    def elmt_id(root, name, retryCnt=3, retryWaitSec=3):
+        cb = SeleniumUtils._getFunc(root, 'find_element_by_id')
+        return SeleniumUtils._elmt(root, cb, name, retryCnt, retryWaitSec)
+
+
+    @staticmethod
+    def elmts_id(root, name, retryCnt=3, retryWaitSec=3):
+        cb = SeleniumUtils._getFunc(root, 'find_elements_by_id')
+        return SeleniumUtils._elmts(root, cb, name, retryCnt, retryWaitSec)

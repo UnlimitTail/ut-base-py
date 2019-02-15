@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from bs4 import BeautifulSoup, NavigableString
 import json
 import logging
 import requests
 import shutil
 import urllib.request
+
 
 """
  http, https url 파일 다운로드
@@ -71,7 +73,6 @@ class HttpError(Exception):
 
 
 def addHeaderFiledsForScrap(header:dict):
-    #header['User-Agent'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1'
     header['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
     header['Accept'] = 'text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8'
     header['Accept-Charset'] = 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'
@@ -82,3 +83,25 @@ def addHeaderFiledsForScrap(header:dict):
     header['Content-Type'] = "application/x-www-form-urlencoded"
     
     return header
+
+
+def strip_tags(html, invalid_tags = ['span',]):
+    soup = BeautifulSoup(html, 'html.parser')
+
+    for tag in soup.findAll(True):
+        if tag.name in invalid_tags:
+            s = ""
+
+            for c in tag.contents:
+                if not isinstance(c, NavigableString):
+                    c = strip_tags(str(c), invalid_tags)
+                s += str(c)
+
+            tag.replaceWith(s)
+
+    return soup
+
+
+def getTextForReport(soup):
+    soup = strip_tags(str(soup), ['span',])
+    return soup.get_text(separator='\n').replace(u'\xa0',u'') 
