@@ -37,6 +37,7 @@ class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
         self._options.add_argument("disable-gpu")
         self._options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
         self._options.add_argument("lang=ko_KR")
+        self._options.add_argument('--remote-debugging-port=45447')
 
         if 0 < self._poolCnt:
             self._q = queue.Queue()
