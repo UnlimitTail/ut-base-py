@@ -1,19 +1,28 @@
 # -*- coding: utf-8 -*-
 # nlp_support
 
-from konlpy.tag import Kkma
+from konlpy.tag import Komoran
+import logging
+import threading
+
+log = logging.getLogger(__name__)
+
 
 class NLPManager:
-    def __init__(self, idx):
-        self._idx = idx
-        self._kkma = Kkma()
+    def __init__(self, userdic=None):
+        
+        # self._kkma = Kkma()
+        # komoran = Komoran(userdic='./user_dic.txt')
+        self._komoran = Komoran(userdic=userdic)
 
     def getTags(self, sentences, tagsMax=3):
+        sentences = sentences.replace('\n', '')
         wordsMap = dict()
-        result = self._kkma.pos(sentences)
+        result = self._komoran.pos(sentences)
         for v in result:
             # NN:명사, OL:외국어
-            if 'NN' in v[1] or 'OL' in v[1]:
+            # if 'NN' in v[1] or 'OL' in v[1]:
+            if 'NN' in v[1]:
                 if v[0] in wordsMap:
                     wordsMap[v[0]] = wordsMap[v[0]] + 1
                 else:
@@ -24,16 +33,26 @@ class NLPManager:
             wordsList.append([value, key])
 
         wordsList.sort(reverse=True)
-        return wordsList[0:tagsMax]
+        slicedList = wordsList[0:tagsMax]
+
+        returnValue = list()
+        for v in slicedList:
+            returnValue.append(v[1])
+
+        return returnValue
 
     @staticmethod
-    def getTagsStatic(sentences, tagsMax=3):
-        kkma = Kkma()
+    def getTagsStatic(sentences, userdic=None, tagsMax=3):
+        sentences = sentences.replace('\n', '')
+        komoran = Komoran(userdic=userdic)
+        
         wordsMap = dict()
-        result = kkma.pos(sentences)
+        # result = kkma.pos(sentences)
+        result = komoran.pos(sentences)
         for v in result:
             # NN:명사, OL:외국어
-            if 'NN' in v[1] or 'OL' in v[1]:
+            # if 'NN' in v[1] or 'OL' in v[1]:
+            if 'NN' in v[1]:
                 if v[0] in wordsMap:
                     wordsMap[v[0]] = wordsMap[v[0]] + 1
                 else:
@@ -44,10 +63,46 @@ class NLPManager:
             wordsList.append([value, key])
 
         wordsList.sort(reverse=True)
-        return wordsList[0:tagsMax]
+        slicedList = wordsList[0:tagsMax]
 
+        returnValue = list()
+        for v in slicedList:
+            returnValue.append(v[1])
+
+        return returnValue
 
 if __name__ == "__main__":
     print(NLPManager.getTagsStatic('나는 아무런 생각이 없다. 왜냐하면 아무런 생각이 없기 때문이다.'))
     
         
+
+
+
+
+class NLPManagerPoolBaseClass:
+	pass
+
+class NLPManagerPoolSingleton(type):
+	_instances = {}
+
+	def __call__(cls, *args, **kwargs):
+		if cls not in cls._instances:
+			cls._instances[cls] = super(NLPManagerPoolSingleton, cls).__call__(*args, **kwargs)
+		return cls._instances[cls]
+
+
+class NLPManagerPool(NLPManagerPoolBaseClass, metaclass=NLPManagerPoolSingleton):
+    def __init__(self):
+        log.info('Create NLPManagerPool ... ')
+        self._lock = threading.Lock()
+
+        self._map = dict()
+
+
+    def createPool(self, threadName):
+        with self._lock:
+            self._map[threadName] = NLPManager()
+
+    def get(self, threadName):
+        with self._lock:
+            return self._map[threadName]
