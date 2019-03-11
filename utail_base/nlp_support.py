@@ -52,7 +52,8 @@ class NLPManager:
         for v in result:
             # NN:명사, OL:외국어
             # if 'NN' in v[1] or 'OL' in v[1]:
-            if 'NN' in v[1]:
+            # NNG 일반명사   NNP 고유명사
+            if 'NNP' == v[1] or 'NNG' == v[1]:
                 if v[0] in wordsMap:
                     wordsMap[v[0]] = wordsMap[v[0]] + 1
                 else:
