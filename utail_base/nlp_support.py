@@ -42,7 +42,7 @@ class NLPManager:
         return returnValue
 
     @staticmethod
-    def getTagsStatic(sentences, userdic=None, tagsMax=3):
+    def getTagsStatic(sentences, userdic=None, filterFunc=None, tagsMax=3):
         sentences = sentences.replace('\n', '')
         komoran = Komoran(userdic=userdic)
         
@@ -55,16 +55,19 @@ class NLPManager:
             # NNG 일반명사   NNP 고유명사
             if 'NNP' == v[1] or 'NNG' == v[1]:
                 if v[0] in wordsMap:
-                    wordsMap[v[0]] = wordsMap[v[0]] + 1
+                    wordsMap[str(v[0])] = int(wordsMap[str(v[0])]) + 1
                 else:
-                    wordsMap[v[0]] = 1
+                    wordsMap[str(v[0])] = 1
 
         wordsList = list()
         for key, value in wordsMap.items():
             wordsList.append([value, key])
 
+        if filterFunc is not None:
+            filterFunc(wordsList)
+
         wordsList.sort(reverse=True)
-        slicedList = wordsList[0:tagsMax]
+        slicedList = wordsList[int(0):int(tagsMax)]
 
         returnValue = list()
         for v in slicedList:
