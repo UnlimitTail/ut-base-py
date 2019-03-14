@@ -24,6 +24,10 @@ class TextManip(TextManipBaseClass, metaclass=TextManipSingleton):
         self._dics = dict()
     
     def makeDic(self, log, dicName, filePath):
+        if dicName in self._dics:
+            log.debug('dic alreay done')
+            return
+
         dic = dict()
 
         f = open(filePath, 'r')
