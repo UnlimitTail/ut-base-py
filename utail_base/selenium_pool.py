@@ -58,11 +58,17 @@ class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
         log.debug('chrome driver loading... ')
 
         with self._lock:
-            log.debug('enter lock : ' + str(threading.get_ident()))
             driver = webdriver.Chrome(self._webDriverPath, chrome_options=self._options)
             self._map[threadName] = driver
             driver.implicitly_wait(5)
-            log.debug('leave lock : ' + str(threading.get_ident()))
+
+            SeleniumPool._execute_script_imitating_people(driver)
+
+    @staticmethod
+    def _execute_script_imitating_people(driver):
+        driver.execute_script("Object.defineProperty(navigator, 'plugins', {get: function() {return[1, 2, 3, 4, 5]}})")
+        driver.execute_script("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})")
+        driver.execute_script("const getParameter = WebGLRenderingContext.getParameter;WebGLRenderingContext.prototype.getParameter = function(parameter) {if (parameter === 37445) {return 'NVIDIA Corporation'} if (parameter === 37446) {return 'NVIDIA GeForce GTX 980 Ti OpenGL Engine';}return getParameter(parameter);};")
 
     def getDriver(self, threadName):
         with self._lock:
