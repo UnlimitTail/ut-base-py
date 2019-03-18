@@ -109,7 +109,7 @@ def getTextForReport(soup):
     # eliminate script tag
     [s.extract() for s in soup('img')]
 
-    soup = strip_tags(str(soup), ['span',])
+    soup = strip_tags(str(soup), ['span', 'font', ])
     newStr = str(soup)
     soup = BeautifulSoup( newStr, 'html.parser')
     return soup.get_text(separator='\n').replace(u'\xa0',u'') 
