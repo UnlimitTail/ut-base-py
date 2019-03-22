@@ -62,7 +62,7 @@ class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
             self._map[threadName] = driver
             driver.implicitly_wait(5)
 
-            SeleniumPool._execute_script_imitating_people(driver)
+            #SeleniumPool._execute_script_imitating_people(driver)
 
     @staticmethod
     def _execute_script_imitating_people(driver):
