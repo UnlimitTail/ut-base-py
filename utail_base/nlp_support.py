@@ -10,36 +10,38 @@ log = logging.getLogger(__name__)
 
 class NLPManager:
     def __init__(self, userdic=None):
-        
-        # self._kkma = Kkma()
-        # komoran = Komoran(userdic='./user_dic.txt')
         self._komoran = Komoran(userdic=userdic)
 
-    def getTags(self, sentences, tagsMax=3):
+    def getTags(self, sentences, filterFunc=None, tagsMax=3):
         sentences = sentences.replace('\n', '')
         wordsMap = dict()
         result = self._komoran.pos(sentences)
         for v in result:
             # NN:명사, OL:외국어
             # if 'NN' in v[1] or 'OL' in v[1]:
-            if 'NN' in v[1]:
+            # NNG 일반명사   NNP 고유명사
+            if 'NNP' == v[1] or 'NNG' == v[1]:
                 if v[0] in wordsMap:
-                    wordsMap[v[0]] = wordsMap[v[0]] + 1
+                    wordsMap[str(v[0])] = int(wordsMap[str(v[0])]) + 1
                 else:
-                    wordsMap[v[0]] = 1
+                    wordsMap[str(v[0])] = 1
 
         wordsList = list()
         for key, value in wordsMap.items():
             wordsList.append([value, key])
 
+        if filterFunc is not None:
+            filterFunc(wordsList)
+
         wordsList.sort(reverse=True)
-        slicedList = wordsList[0:tagsMax]
+        slicedList = wordsList[int(0):int(tagsMax)]
 
         returnValue = list()
         for v in slicedList:
             returnValue.append(v[1])
 
         return returnValue
+
 
     @staticmethod
     def getTagsStatic(sentences, userdic=None, filterFunc=None, tagsMax=3):
