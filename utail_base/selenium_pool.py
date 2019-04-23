@@ -48,6 +48,7 @@ class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
 
                     log.debug('chrome driver loading... ')
                     driver = webdriver.Chrome(self._webDriverPath, chrome_options=self._options)
+                    driver.set_page_load_timeout(60)
                     driver.implicitly_wait(5)
 
                     self._q.put(driver)
@@ -59,6 +60,7 @@ class SeleniumPool(SeleniumPoolBaseClass, metaclass=SeleniumPoolSingleton):
 
         with self._lock:
             driver = webdriver.Chrome(self._webDriverPath, chrome_options=self._options)
+            driver.set_page_load_timeout(60)
             self._map[threadName] = driver
             driver.implicitly_wait(5)
 

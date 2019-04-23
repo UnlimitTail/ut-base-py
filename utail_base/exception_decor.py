@@ -8,10 +8,9 @@ def exception(logger):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except:
+            except Exception as inst:
                 # log the exception
-                err = "There was an exception in  "
-                err += func.__name__
+                err = "There was an exception in {}. msg:{}".format(func.__name__, inst.args)
                 logger.error(err)
                 raise
         return wrapper
@@ -23,10 +22,9 @@ def exceptionDB(logger, loggers_idx = 0):
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
-            except:
+            except Exception as inst:
                 # log the exception
-                err = "There was an exception in  "
-                err += func.__name__
+                err = "There was an exception in {}. msg:{}".format(func.__name__, inst.args)
                 logger.error(err)
                 return None
             finally:
