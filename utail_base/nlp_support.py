@@ -12,7 +12,7 @@ class NLPManager:
     def __init__(self, userdic=None):
         self._komoran = Komoran(userdic=userdic)
 
-    def getTags(self, sentences, filterFunc=None, tagsMax=3):
+    def getTags(self, sentences, filterFunc=None, tagsMax=3, cbKeywordList=None):
         sentences = sentences.replace('\n', '')
         wordsMap = dict()
         result = self._komoran.pos(sentences)
@@ -33,7 +33,12 @@ class NLPManager:
         if filterFunc is not None:
             filterFunc(wordsList)
 
+
         wordsList.sort(reverse=True)
+
+        if cbKeywordList is not None:
+            cbKeywordList(wordsList)
+
         slicedList = wordsList[int(0):int(tagsMax)]
 
         returnValue = list()
@@ -78,9 +83,13 @@ class NLPManager:
         return returnValue
 
 if __name__ == "__main__":
+    # static test
     print(NLPManager.getTagsStatic('나는 아무런 생각이 없다. 왜냐하면 아무런 생각이 없기 때문이다.'))
-    
-        
+
+    # from utail_base import string_support
+    # nlp = NLPManager()
+    # tm = string_support.TextManip()
+    # tm.makeDic(log, 'tagExcept', "./user_dic_except.txt")
 
 
 
