@@ -2,7 +2,7 @@
 
 from bs4 import BeautifulSoup, NavigableString
 import inspect
-import json
+import ujson
 import logging
 import requests
 import shutil
@@ -37,7 +37,7 @@ def http_send(url, body='', content_type='json', method='POST'):
 
     try:
         if len(body) > 0:
-            jsonbody = json.dumps(body)
+            jsonbody = ujson.dumps(body)
             jsonbodyAsBytes = jsonbody.encode('utf-8')
             req.add_header('Content-Length', len(jsonbodyAsBytes))
             return urllib.request.urlopen(req, jsonbodyAsBytes, timeout=30)
