@@ -30,14 +30,13 @@ class NLPManager:
         for key, value in wordsMap.items():
             wordsList.append([value, key])
 
-        if filterFunc is not None:
-            filterFunc(wordsList)
-
-
         wordsList.sort(reverse=True)
 
         if cbKeywordList is not None:
             cbKeywordList(wordsList)
+
+        if filterFunc is not None:
+            filterFunc(wordsList)
 
         slicedList = wordsList[int(0):int(tagsMax)]
 
@@ -89,7 +88,11 @@ if __name__ == "__main__":
     # from utail_base import string_support
     # nlp = NLPManager()
     # tm = string_support.TextManip()
-    # tm.makeDic(log, 'tagExcept', "./user_dic_except.txt")
+    # tm.makeDic(
+    #         log, 
+    #         ('exceptNormal', "./user_dic_except.txt"),
+    #         ('exceptHotKeywords', "./user_dic_except_hotkeywords.txt"),
+    #     )
 
 
 

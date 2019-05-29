@@ -23,24 +23,30 @@ class TextManip(TextManipBaseClass, metaclass=TextManipSingleton):
     def __init__(self):
         self._dics = dict()
     
-    def makeDic(self, log, dicName, filePath):
-        if dicName in self._dics:
-            log.debug('dic alreay done')
-            return
+    def makeDic(
+        self, log, 
+        *args   # (dicName, filePath)
+        ):
 
-        dic = dict()
+        for i in range(len(args)):
+            dicName = args[i][0]
+            if dicName in self._dics:
+                log.debug('dic({}) alreay done.'.format(dicName))
+                continue
 
-        f = open(filePath, 'r')
-        while True:
-            line = f.readline()
-            if not line:
-                break
-            dic[line.strip()] = 0
-        f.close()
+            dic = dict()
 
-        if 0 < len(dic):
-            self._dics[dicName] = dic
-            log.debug('made dictionary({}). words:{}'.format(dicName, len(dic)))
+            f = open(args[i][1], 'r')
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                dic[line.strip()] = 0
+            f.close()
+
+            if 0 < len(dic):
+                self._dics[dicName] = dic
+                log.debug('made dictionary({}). words:{}'.format(dicName, len(dic)))
 
     def exists(self, dicName, word):
         if word in self._dics[dicName]:
