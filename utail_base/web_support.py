@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup, NavigableString
 import inspect
 import ujson
+import lxml
 import logging
 import requests
 import shutil
@@ -97,7 +98,7 @@ def addHeaderFiledsForScrap(header:dict):
 
 
 def strip_tags(html, invalid_tags = ['span',]):
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = BeautifulSoup(html, 'lxml')
 
     for tag in soup.findAll(True):
         if tag.name in invalid_tags:
@@ -108,7 +109,7 @@ def strip_tags(html, invalid_tags = ['span',]):
                     c = strip_tags(str(c), invalid_tags)
                 s += str(c)
 
-            sNode = BeautifulSoup(s, 'html.parser')
+            sNode = BeautifulSoup(s, 'lxml')
             tag.replaceWith(sNode)
 
     return soup
@@ -122,5 +123,5 @@ def getTextForReport(soup):
 
     soup = strip_tags(str(soup), ['span', 'font', ])
     newStr = str(soup)
-    soup = BeautifulSoup( newStr, 'html.parser')
+    soup = BeautifulSoup( newStr, 'lxml')
     return soup.get_text(separator='\n').replace(u'\xa0',u'') 
