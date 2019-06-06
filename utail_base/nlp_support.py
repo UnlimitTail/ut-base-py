@@ -9,8 +9,18 @@ log = logging.getLogger(__name__)
 
 
 class NLPManager:
+    instance_cnt = 0
+
     def __init__(self, userdic=None):
         self._komoran = Komoran(userdic=userdic)
+
+        NLPManager.instance_cnt += 1
+        log.debug('created NLPManager. count of NLPManager instances : {}'.format(NLPManager.instance_cnt))
+
+    def __del__(self):
+        NLPManager.instance_cnt -= 1
+        log.debug('deleted NLPManager. count of NLPManager instances : {}'.format(NLPManager.instance_cnt))
+        
 
     def getTags(self, sentences, filterFunc=None, tagsMax=3, cbKeywordList=None):
         sentences = sentences.replace('\n', '')
