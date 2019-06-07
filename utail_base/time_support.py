@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, timedelta
 import maya
 from time import mktime
 
@@ -17,6 +17,15 @@ def toDt(dateStr:str) -> datetime:
     # except Exception:
     #     print('error! test')
     #     quit(1)
+
+
+# dateStr( ex> 14:14. 금일 0시 0분. 한국시간 ) 
+# return : datetime(UTC)
+def korDatedateHM_toUTC(dateStr):
+    timeSplits = dateStr.split(':')
+    nowKor = datetime.utcnow() + timedelta(hours=9)
+    outTime = nowKor.replace( hour=int(timeSplits[0]), minute=int(timeSplits[1]), second=0, microsecond=0)
+    return timeOffset(outTime)
 
 
 def _win_set_time(time_tuple):
