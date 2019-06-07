@@ -3,6 +3,7 @@
 
 from konlpy.tag import Komoran
 import logging
+import re
 import threading
 
 log = logging.getLogger(__name__)
@@ -16,25 +17,45 @@ class NLPManager:
 
         NLPManager.instance_cnt += 1
         log.debug('created NLPManager. count of NLPManager instances : {}'.format(NLPManager.instance_cnt))
-
-    def __del__(self):
-        NLPManager.instance_cnt -= 1
-        log.debug('deleted NLPManager. count of NLPManager instances : {}'.format(NLPManager.instance_cnt))
         
 
-    def getTags(self, sentences, filterFunc=None, tagsMax=3, cbKeywordList=None):
-        sentences = sentences.replace('\n', '')
+    def __del__(self):
+        log.debug('deleted NLPManager')
+
+        NLPManager.instance_cnt -= 1
+        log.debug('deleted NLPManager. count of NLPManager instances : {}'.format(NLPManager.instance_cnt))
+
+    @staticmethod
+    def split_sentences(text):
+        text = text.replace('\n', '')
+
+        all_sentences = []
+        lines = [line for line in text.strip().splitlines() if line.strip()]
+        
+        for line in lines:
+            sentences = re.split("(?<=[.?!])\s+", line)
+            sentences = [s.strip() for s in sentences if s.strip()]
+            all_sentences += sentences
+        
+        return all_sentences
+
+
+    def getTags(self, text, filterFunc=None, tagsMax=3, cbKeywordList=None):
+        splited_sentences = NLPManager.split_sentences(text)
+
         wordsMap = dict()
-        result = self._komoran.pos(sentences)
-        for v in result:
-            # NN:명사, OL:외국어
-            # if 'NN' in v[1] or 'OL' in v[1]:
-            # NNG 일반명사   NNP 고유명사
-            if 'NNP' == v[1] or 'NNG' == v[1]:
-                if v[0] in wordsMap:
-                    wordsMap[str(v[0])] = int(wordsMap[str(v[0])]) + 1
-                else:
-                    wordsMap[str(v[0])] = 1
+
+        for sentences in splited_sentences:
+            result = self._komoran.pos(sentences)
+            for v in result:
+                # NN:명사, OL:외국어
+                # if 'NN' in v[1] or 'OL' in v[1]:
+                # NNG 일반명사   NNP 고유명사
+                if 'NNP' == v[1] or 'NNG' == v[1]:
+                    if v[0] in wordsMap:
+                        wordsMap[str(v[0])] = int(wordsMap[str(v[0])]) + 1
+                    else:
+                        wordsMap[str(v[0])] = 1
 
         wordsList = list()
         for key, value in wordsMap.items():
@@ -93,7 +114,10 @@ class NLPManager:
 
 if __name__ == "__main__":
     # static test
-    print(NLPManager.getTagsStatic('나는 아무런 생각이 없다. 왜냐하면 아무런 생각이 없기 때문이다.'))
+    # print(NLPManager.getTagsStatic('나는 아무런 생각이 없다. 왜냐하면 아무런 생각이 없기 때문이다.'))
+
+    nlp = NLPManager()
+    print( nlp.getTags('뭐타야하냐면 \n아톰') )
 
     # from utail_base import string_support
     # nlp = NLPManager()
