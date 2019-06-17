@@ -122,6 +122,9 @@ def getTextForReport(soup):
     # eliminate script tag
     [s.extract() for s in soup('img')]
 
+    #
+    [s.extract() for s in soup('strong')]
+
     soup = strip_tags(str(soup), ['span', 'font', ])
     newStr = str(soup)
     soup = BeautifulSoup( newStr, 'lxml')
