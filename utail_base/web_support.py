@@ -122,13 +122,12 @@ def getTextForReport(soup):
     # eliminate script tag
     [s.extract() for s in soup('img')]
 
-    #
-    [s.extract() for s in soup('strong')]
+    [s.unwrap() for s in soup('span')]
+    [s.unwrap() for s in soup('font')]
+    [s.unwrap() for s in soup('strong')]
 
-    soup = strip_tags(str(soup), ['span', 'font', ])
-    newStr = str(soup)
-    soup = BeautifulSoup( newStr, 'lxml')
+    newSoup = BeautifulSoup(str(soup), 'lxml')
 
-    text = soup.get_text(separator='\n').replace(u'\xa0',u'') 
+    text = newSoup.get_text(separator='\n').replace(u'\xa0',u'') 
     text = re.sub('[\n]{3,}', '\n\n', text)
     return text
