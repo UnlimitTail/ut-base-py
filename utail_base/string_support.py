@@ -7,6 +7,22 @@ def clean_html(raw_html, pattern = '<.*?>'):
     cleantext = re.sub(cleanr, '', raw_html)
     return cleantext
 
+checking_symbol_characters = '''\
+        !\"\'@#$%^&*()_-+={}[]./:;<>?\
+        '''
+
+def checkSymbolOnly(text:str):
+    global checking_symbol_characters
+
+    for c in text:
+        if c not in checking_symbol_characters:
+            #print('적합:{}'.format(text))
+            return False
+
+    #print('기호로만 구성된 문자열:{}'.format(text))
+    return True
+
+
 
 class TextManipBaseClass:
 	pass
@@ -28,8 +44,13 @@ class TextManip(TextManipBaseClass, metaclass=TextManipSingleton):
         *args   # (dicName, filePath)
         ):
 
+        log.debug('dicpairCnt:{}'.format(len(args)))
+
         for i in range(len(args)):
             dicName = args[i][0]
+            
+            log.debug('dicName:{}'.format(dicName))
+
             if dicName in self._dics:
                 log.debug('dic({}) alreay done.'.format(dicName))
                 continue
