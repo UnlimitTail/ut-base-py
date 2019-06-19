@@ -22,6 +22,9 @@ def checkSymbolOnly(text:str):
     #print('기호로만 구성된 문자열:{}'.format(text))
     return True
 
+def is_ascii(s):
+    return all(ord(c) < 128 for c in s)
+
 
 
 class TextManipBaseClass:
