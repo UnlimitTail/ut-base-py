@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
 import re
 
 def clean_html(raw_html, pattern = '<.*?>'):
@@ -24,6 +25,20 @@ def checkSymbolOnly(text:str):
 
 def is_ascii(s):
     return all(ord(c) < 128 for c in s)
+
+def enc(s, enc_algorithm='sha256', sep='|', addReversed=True):
+    try:
+        if enc_algorithm == 'sha256':
+            key = enc_algorithm + sep + hashlib.sha256(s.encode()).hexdigest()
+
+            if addReversed is True:
+                key = key + sep + hashlib.sha256(s[::-1].encode()).hexdigest()
+
+            return key
+
+    except Exception as inst:
+        print(inst.args)
+        return s
 
 
 
