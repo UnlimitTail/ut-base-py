@@ -34,11 +34,11 @@ def enc(s, enc_algorithm='sha256', sep='|', addReversed=True):
             if addReversed is True:
                 key = key + sep + hashlib.sha256(s[::-1].encode()).hexdigest()
 
-            return key
+            return True, key
 
     except Exception as inst:
         print(inst.args)
-        return s
+        return False, s
 
 
 
