@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name             = 'utailBase',
-    version          = '0.0.69',
+    version          = '0.0.70',
     description      = 'unlimit tail basementlib',
     long_description = open('README.md').read(),
     author           = 'chase',
