@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # nlp_support
 
+import jpype
 from konlpy.tag import Komoran
 import logging
 import re
@@ -28,7 +29,7 @@ class NLPManager:
     @staticmethod
     def split_sentences(text):
         text = text.replace('\n', '')
-
+            
         all_sentences = []
         lines = [line for line in text.strip().splitlines() if line.strip()]
         
@@ -41,6 +42,8 @@ class NLPManager:
 
 
     def getTags(self, text, filterFunc=None, tagsMax=3, cbKeywordList=None):
+        jpype.attachThreadToJVM()
+        
         splited_sentences = NLPManager.split_sentences(text)
 
         wordsMap = dict()
@@ -151,10 +154,10 @@ class NLPManagerPool(NLPManagerPoolBaseClass, metaclass=NLPManagerPoolSingleton)
         self._map = dict()
 
 
-    def createPool(self, threadName):
-        with self._lock:
-            self._map[threadName] = NLPManager()
+    def createPool(self, threadName, userDic=None):
+        #with self._lock:
+        self._map[threadName] = NLPManager(userdic=userDic)
 
     def get(self, threadName):
-        with self._lock:
-            return self._map[threadName]
+        # with self._lock:
+        return self._map[threadName]
