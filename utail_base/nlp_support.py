@@ -11,6 +11,7 @@ import threading
 log = logging.getLogger(__name__)
 
 
+
 class NLPManager:
     instance_cnt = 0
 
@@ -64,6 +65,7 @@ class NLPManager:
                             wordsMap[str(v[0])] = int(wordsMap[str(v[0])]) + 1
                         else:
                             wordsMap[str(v[0])] = 1
+                            
         except Exception as inst:
             raise Exception('falied komoran.pos() msg:{} sencence:{}'.format(inst.args, sentences))
 

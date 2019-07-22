@@ -41,7 +41,6 @@ def enc(s, enc_algorithm='sha256', sep='|', addReversed=True):
         return False, s
 
 
-
 class TextManipBaseClass:
 	pass
 
