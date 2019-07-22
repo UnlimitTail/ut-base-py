@@ -7,6 +7,7 @@ import logging
 import re
 import threading
 
+
 log = logging.getLogger(__name__)
 
 
@@ -28,37 +29,43 @@ class NLPManager:
 
     @staticmethod
     def split_sentences(text):
-        text = text.replace('\n', '')
+        try:
+            text = text.replace('\n', '')
+                
+            all_sentences = []
+            lines = [line for line in text.strip().splitlines() if line.strip()]
             
-        all_sentences = []
-        lines = [line for line in text.strip().splitlines() if line.strip()]
-        
-        for line in lines:
-            sentences = re.split("(?<=[.?!])\s+", line)
-            sentences = [s.strip() for s in sentences if s.strip()]
-            all_sentences += sentences
+            for line in lines:
+                sentences = re.split("(?<=[.?!])\s+", line)
+                sentences = [s.strip() for s in sentences if s.strip()]
+                all_sentences += sentences
+        except Exception as inst:
+            raise Exception('falied split_sentences. msg:{}'.format(inst.args))
         
         return all_sentences
 
 
     def getTags(self, text, filterFunc=None, tagsMax=3, cbKeywordList=None):
         jpype.attachThreadToJVM()
-        
+
         splited_sentences = NLPManager.split_sentences(text)
 
         wordsMap = dict()
 
-        for sentences in splited_sentences:
-            result = self._komoran.pos(sentences)
-            for v in result:
-                # NN:명사, OL:외국어
-                # if 'NN' in v[1] or 'OL' in v[1]:
-                # NNG 일반명사   NNP 고유명사
-                if 'NNP' == v[1] or 'NNG' == v[1]:
-                    if v[0] in wordsMap:
-                        wordsMap[str(v[0])] = int(wordsMap[str(v[0])]) + 1
-                    else:
-                        wordsMap[str(v[0])] = 1
+        try:
+            for sentences in splited_sentences:
+                result = self._komoran.pos(sentences)
+                for v in result:
+                    # NN:명사, OL:외국어
+                    # if 'NN' in v[1] or 'OL' in v[1]:
+                    # NNG 일반명사   NNP 고유명사
+                    if 'NNP' == v[1] or 'NNG' == v[1]:
+                        if v[0] in wordsMap:
+                            wordsMap[str(v[0])] = int(wordsMap[str(v[0])]) + 1
+                        else:
+                            wordsMap[str(v[0])] = 1
+        except Exception as inst:
+            raise Exception('falied komoran.pos() msg:{} sencence:{}'.format(inst.args, sentences))
 
         wordsList = list()
         for key, value in wordsMap.items():
